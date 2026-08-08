@@ -1,0 +1,514 @@
+1.Convert RGB to Grayscale image and show image matrix 
+
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load the image in color (BGR format)
+image_bgr = cv2.imread('./Ridoy.jpg')
+
+# Convert the BGR image to RGB
+image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+
+# Convert the RGB image to Grayscale
+gray_image = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
+
+# Print the grayscale image matrix
+print("Grayscale Image Matrix:")
+print(gray_image)
+
+# Display the original and grayscale images
+plt.figure(figsize=(8, 4))
+
+plt.subplot(1, 2, 1)
+plt.title('RGB Image')
+plt.imshow(image_rgb)
+plt.axis('off')
+
+plt.subplot(1, 2, 2)
+plt.title('Grayscale Image')
+plt.imshow(gray_image, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show() 
+
+
+
+2. Implement  the  popular  image  enhancement  technique: 
+convert into negative image . 
+
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the image
+image = cv2.imread('./Ridoy.jpg')
+
+# Convert to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Create negative image
+negative_image = 255 - gray_image
+
+# Display images
+plt.figure(figsize=(8, 4))
+
+plt.subplot(1, 2, 1)
+plt.title('Original Image')
+plt.imshow(gray_image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(1, 2, 2)
+plt.title('Negative Image')
+plt.imshow(negative_image, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+
+3. Implement  the  popular  image  enhancement  technique: 
+Brightness Enhancement 
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the image
+image = cv2.imread('./Ridoy.jpg')
+
+# Convert to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Brightness Enhancement (add constant value)
+brightness_value = 50
+bright_image = cv2.add(gray_image, brightness_value)
+
+# Display images
+plt.figure(figsize=(8, 4))
+
+plt.subplot(1, 2, 1)
+plt.title('Original Image')
+plt.imshow(gray_image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(1, 2, 2)
+plt.title('Brightness Enhanced Image')
+plt.imshow(bright_image, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+
+
+4.Implement  the  popular  image  enhancement  technique:  Log 
+transformation & Power Log transformation. 
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the image
+image = cv2.imread('./Ridoy.jpg')
+
+# Convert to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# -------- Log Transformation --------
+c_log = 255 / np.log(1 + np.max(gray_image))
+log_image = c_log * np.log(1 + gray_image)
+log_image = np.array(log_image, dtype=np.uint8)
+
+# -------- Power-Law (Gamma) Transformation --------
+gamma = 0.5  # <1 for brightening
+normalized = gray_image / 255.0
+power_image = np.power(normalized, gamma) * 255
+power_image = np.array(power_image, dtype=np.uint8)
+
+# Display images
+plt.figure(figsize=(10, 4))
+
+plt.subplot(1, 3, 1)
+plt.title('Original Image')
+plt.imshow(gray_image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(1, 3, 2)
+plt.title('Log Transformed')
+plt.imshow(log_image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(1, 3, 3)
+plt.title('Power-Law Transformed')
+plt.imshow(power_image, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+
+5.  Implement  the  popular  image  enhancement  technique: 
+Contrast Enhancement
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the image
+image = cv2.imread('./Ridoy.jpg')
+
+# Convert to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Find min and max intensity values
+min_val = np.min(gray_image)
+max_val = np.max(gray_image)
+
+# Apply contrast enhancement (linear stretching)
+contrast_image = ((gray_image - min_val) / (max_val - min_val)) * 255
+contrast_image = np.array(contrast_image, dtype=np.uint8)
+
+# Display images
+plt.figure(figsize=(8, 4))
+
+plt.subplot(1, 2, 1)
+plt.title('Original Image')
+plt.imshow(gray_image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(1, 2, 2)
+plt.title('Contrast Enhanced Image')
+plt.imshow(contrast_image, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+6.   Implement  smoothing  linear  filter  using  the  mask  3x3, 
+5x5,7x7,9x9. ( Average, Weighted)
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load grayscale image
+image = cv2.imread('./gray_image.png', cv2.IMREAD_GRAYSCALE)
+
+# Define kernel sizes
+kernel_sizes = [3, 5, 7, 9]
+
+# Function to apply average filter
+def apply_average_filter(image, k):
+    kernel = np.ones((k, k), np.float32) / (k * k)
+    return cv2.filter2D(image, -1, kernel)
+
+# Function to apply Gaussian (weighted) filter
+def apply_weighted_filter(image, k):
+    return cv2.GaussianBlur(image, (k, k), 0)
+
+# Display filtered results
+for k in kernel_sizes:
+    avg_filtered = apply_average_filter(image, k)
+    weighted_filtered = apply_weighted_filter(image, k)
+
+    plt.figure(figsize=(10, 4))
+    plt.suptitle(f'{k}x{k} Filters', fontsize=14)
+
+    plt.subplot(1, 3, 1)
+    plt.title("Original")
+    plt.imshow(image, cmap='gray')
+    plt.axis('off')
+
+    plt.subplot(1, 3, 2)
+    plt.title(f"Average {k}x{k}")
+    plt.imshow(avg_filtered, cmap='gray')
+    plt.axis('off')
+
+    plt.subplot(1, 3, 3)
+    plt.title(f"Weighted {k}x{k}")
+    plt.imshow(weighted_filtered, cmap='gray')
+    plt.axis('off')
+
+    plt.tight_layout()
+    plt.show() 
+
+
+
+
+
+7.  Implement  a  program  to  find  MSE  and  PSNR  for  different 
+distorted/enhanced  images  with  an  original  image.  (Using  enhanced  images  from  Lab 
+04 & Lab 05)
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+# Load original image
+image = cv2.imread('./Ridoy.jpg', cv2.IMREAD_GRAYSCALE)
+
+# -------- Log Transformation --------
+c_log = 255 / np.log(1 + np.max(image))
+log_image = c_log * np.log(1 + image)
+log_image = np.array(log_image, dtype=np.uint8)
+
+# -------- Power-Law Transformation --------
+gamma = 0.5
+normalized = image / 255.0
+power_image = np.power(normalized, gamma) * 255
+power_image = np.array(power_image, dtype=np.uint8)
+
+# -------- Contrast Enhancement --------
+min_val = np.min(image)
+max_val = np.max(image)
+
+contrast_image = ((image - min_val) / (max_val - min_val)) * 255
+contrast_image = np.array(contrast_image, dtype=np.uint8)
+
+# -------- Function to calculate MSE --------
+def calculate_mse(original, enhanced):
+    mse = np.mean((original - enhanced) ** 2)
+    return mse
+
+# -------- Function to calculate PSNR --------
+def calculate_psnr(mse):
+    if mse == 0:
+        return 100
+    psnr = 10 * math.log10((255 * 255) / mse)
+    return psnr
+
+# Calculate values
+mse_log = calculate_mse(image, log_image)
+psnr_log = calculate_psnr(mse_log)
+
+mse_power = calculate_mse(image, power_image)
+psnr_power = calculate_psnr(mse_power)
+
+mse_contrast = calculate_mse(image, contrast_image)
+psnr_contrast = calculate_psnr(mse_contrast)
+
+# Print Results
+print("Log Transformation:")
+print("MSE =", mse_log)
+print("PSNR =", psnr_log)
+
+print("\nPower-Law Transformation:")
+print("MSE =", mse_power)
+print("PSNR =", psnr_power)
+
+print("\nContrast Enhancement:")
+print("MSE =", mse_contrast)
+print("PSNR =", psnr_contrast)
+
+# Display Images
+plt.figure(figsize=(12,8))
+
+plt.subplot(2,2,1)
+plt.title("Original Image")
+plt.imshow(image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(2,2,2)
+plt.title("Log Transformation")
+plt.imshow(log_image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(2,2,3)
+plt.title("Power-Law Transformation")
+plt.imshow(power_image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(2,2,4)
+plt.title("Contrast Enhancement")
+plt.imshow(contrast_image, cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+
+
+8.  Find  the  Output  Applying  Histogram  Equalization  on 
+an Original Image
+
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load original image
+image = cv2.imread('./Ridoy.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Apply Histogram Equalization
+equalized_image = cv2.equalizeHist(image)
+
+# Display Original and Equalized Histograms
+plt.figure(figsize=(12,8))
+
+# Original Image
+plt.subplot(2,2,1)
+plt.title("Original Image")
+plt.imshow(image, cmap='gray')
+plt.axis('off')
+
+# Histogram of Original Image
+plt.subplot(2,2,2)
+plt.title("Histogram of Original Image")
+plt.hist(image.ravel(), bins=256, range=[0,256])
+
+# Equalized Image
+plt.subplot(2,2,3)
+plt.title("Equalized Image")
+plt.imshow(equalized_image, cmap='gray')
+plt.axis('off')
+
+# Histogram of Equalized Image
+plt.subplot(2,2,4)
+plt.title("Histogram of Equalized Image")
+plt.hist(equalized_image.ravel(), bins=256, range=[0,256])
+
+plt.tight_layout()
+plt.show()
+
+# Save Output Image
+cv2.imwrite('Histogram_Equalized_Image.jpg', equalized_image)
+
+print("Histogram Equalization Applied Successfully")
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load original image
+image = cv2.imread('./Ridoy.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Apply Histogram Equalization
+equalized_image = cv2.equalizeHist(image)
+
+# Display Original and Equalized Histograms
+plt.figure(figsize=(12,8))
+
+# Original Image
+plt.subplot(2,2,1)
+plt.title("Original Image")
+plt.imshow(image, cmap='gray')
+plt.axis('off')
+
+# Histogram of Original Image
+plt.subplot(2,2,2)
+plt.title("Histogram of Original Image")
+plt.hist(image.ravel(), bins=256, range=[0,256])
+
+# Equalized Image
+plt.subplot(2,2,3)
+plt.title("Equalized Image")
+plt.imshow(equalized_image, cmap='gray')
+plt.axis('off')
+
+# Histogram of Equalized Image
+plt.subplot(2,2,4)
+plt.title("Histogram of Equalized Image")
+plt.hist(equalized_image.ravel(), bins=256, range=[0,256])
+
+plt.tight_layout()
+plt.show()
+
+# Save Output Image
+cv2.imwrite('Histogram_Equalized_Image.jpg', equalized_image)
+
+print("Histogram Equalization Applied Successfully")
+
+
+
+
+final code:with formula lab-8
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load Original Image
+image = cv2.imread('./Ridoy.jpg', cv2.IMREAD_GRAYSCALE)
+
+# Get image dimensions
+rows, cols = image.shape
+
+# Number of gray levels
+L = 256
+
+# -------------------------------
+# Step 1: Calculate Histogram
+# -------------------------------
+hist = np.zeros(L, dtype=int)
+
+for i in range(rows):
+    for j in range(cols):
+        hist[image[i, j]] += 1
+
+# -------------------------------
+# Step 2: Calculate PDF
+# -------------------------------
+pdf = hist / (rows * cols)
+
+# -------------------------------
+# Step 3: Calculate CDF
+# -------------------------------
+cdf = np.zeros(L)
+
+cdf[0] = pdf[0]
+
+for i in range(1, L):
+    cdf[i] = cdf[i - 1] + pdf[i]
+
+# -------------------------------
+# Step 4: Apply Histogram Equalization Formula
+# s_k = (L-1) * CDF
+# -------------------------------
+transform = np.round((L - 1) * cdf).astype(np.uint8)
+
+# -------------------------------
+# Step 5: Create Equalized Image
+# -------------------------------
+equalized_image = np.zeros_like(image)
+
+for i in range(rows):
+    for j in range(cols):
+        equalized_image[i, j] = transform[image[i, j]]
+
+# -------------------------------
+# Display Images and Histograms
+# -------------------------------
+plt.figure(figsize=(12,8))
+
+# Original Image
+plt.subplot(2,2,1)
+plt.title("Original Image")
+plt.imshow(image, cmap='gray')
+plt.axis('off')
+
+# Histogram of Original Image
+plt.subplot(2,2,2)
+plt.title("Histogram of Original Image")
+plt.hist(image.ravel(), bins=256, range=[0,256])
+
+# Equalized Image
+plt.subplot(2,2,3)
+plt.title("Equalized Image")
+plt.imshow(equalized_image, cmap='gray')
+plt.axis('off')
+
+# Histogram of Equalized Image
+plt.subplot(2,2,4)
+plt.title("Histogram of Equalized Image")
+plt.hist(equalized_image.ravel(), bins=256, range=[0,256])
+
+plt.tight_layout()
+plt.show()
+
+# Save Output Image
+cv2.imwrite('Histogram_Equalized_Image.jpg', equalized_image)
+
+print("Histogram Equalization Applied Successfully")
